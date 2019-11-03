@@ -4,7 +4,7 @@ mkdir code
 
 set -e
 
-fn="Getter"
+fn="FeedGenerator"
 
 url=$(aws lambda get-function --function-name $fn --query 'Code.Location' | jq -r)
 
