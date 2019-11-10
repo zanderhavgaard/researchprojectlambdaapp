@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 fn="FeedGenerator"
 
 cd code
