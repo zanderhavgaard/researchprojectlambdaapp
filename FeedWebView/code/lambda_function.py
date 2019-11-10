@@ -2,7 +2,6 @@ import sys
 import jinja2
 import json
 
-
 html_template = """
 <html>
   <head>
@@ -18,27 +17,31 @@ html_template = """
 </html>
 """
 
+
 def lambda_handler(event, context):
 
-    content_dict = parse_feed_json(event)
+    # TODO get from feedGenerator
+    feed_json = test_dict
+
+    content_dict = parse_feed_json(feed_json)
 
     html = fill_html_template(html_template, content_dict)
 
+    response = build_return(html)
+
     if local_test:
-        print(build_return(html))
+        print(response)
     else:
-        return build_return(html)
+        return response
 
 
-def parse_feed_json(feed_json):
-    if local_test:
-        feed_json_dict = json.loads(feed_json)
-    else:
-        feed_json_dict = feed_json
+def parse_feed_json(feed_json_dict):
     feed_dict = {}
     if feed_json_dict["StatusCode"] == 200:
         for file_name, file_path in feed_json_dict["feed"].items():
             feed_dict[file_name] = file_path
+    else:
+        print("Error parsing response ...")
     return feed_dict
 
 
@@ -59,16 +62,7 @@ def build_return(html):
 
 # >>>>> testing <<<<<
 
-local_test = bool(sys.argv[1]) if len(sys.argv) > 1 else False
-
-if local_test:
-    test_dict = {
-        "file_one.png": "https://via.placeholder.com/150",
-        "file_two.png": "https://via.placeholder.com/250",
-        "file_thre.png": "https://via.placeholder.com/350"
-    }
-    test_json = """
-{
+test_dict = {
     "StatusCode": 200,
     "feed": {
         "file_one.png": "https://via.placeholder.com/150",
@@ -76,8 +70,10 @@ if local_test:
         "file_thre.png": "https://via.placeholder.com/350"
     }
 }
-"""
-    # test_event = json.dumps(test_json)
-    test_event = test_json
+
+# call the method if running locally
+local_test = bool(sys.argv[1]) if len(sys.argv) > 1 else False
+if local_test:
+    test_event = None
     test_context = None
     lambda_handler(test_event, test_context)
