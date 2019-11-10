@@ -1,0 +1,8 @@
+{
+    "StatusCode": 200,
+    "feed": {
+        "file_one.png": "https://via.placeholder.com/150",
+        "file_two.png": "https://via.placeholder.com/250",
+        "file_thre.png": "https://via.placeholder.com/350"
+    }
+}

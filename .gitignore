@@ -1,2 +1,3 @@
 __pycache__/
-lambda_p3.6
+python/*
+*.zip
