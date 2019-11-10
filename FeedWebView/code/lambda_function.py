@@ -31,8 +31,10 @@ def lambda_handler(event, context):
 
 
 def parse_feed_json(feed_json):
-    if local_test: feed_json_dict = json.loads(feed_json)
-    else: feed_json_dict = feed_json
+    if local_test:
+        feed_json_dict = json.loads(feed_json)
+    else:
+        feed_json_dict = feed_json
     feed_dict = {}
     if feed_json_dict["StatusCode"] == 200:
         for file_name, file_path in feed_json_dict["feed"].items():
