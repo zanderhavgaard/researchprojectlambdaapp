@@ -21,6 +21,12 @@ Must pass a json of two keys and one extra conditional key:
     - `get_file_url` - will return an absolute url to the image file in the s3 bucket
       - you must also pass an extra key:value `filename` which is the name of the file.
 
+### Example using command `list`
+
+``` bash
+curl -v -X GET -H "x-api-key: $aws_api_key" -H "Content-Type:application/json" -d '{"StatusCode": 200, "command":"list"}' "$aws_api_gateway/live/getter"
+```
+
 ### Example using command `get_file_url`
 ```bash
 curl -v -X GET -H "x-api-key: $aws_api_key" -H "Content-Type:application/json" -d '{"StatusCode": 200, "command":"get_file_url","filename":"green.png"}' "$aws_api_gateway/live/getter"
