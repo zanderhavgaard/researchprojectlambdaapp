@@ -16,6 +16,7 @@ lives at `<api_gateway>/live/getter`, valid methods are `GET`
 
 Must pass a json of two keys and one extra conditional key:
 
+`StatusCode` - must be 200
 `command` - must be either:
     - `list` - will return a list of all filenames in bucket.
     - `get_file_url` - will return an absolute url to the image file in the s3 bucket

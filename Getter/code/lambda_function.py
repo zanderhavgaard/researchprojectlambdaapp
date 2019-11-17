@@ -2,8 +2,8 @@ import sys
 import json
 import boto3
 
-img_bucket = 'lambda-app-images'
 s3 = boto3.client('s3')
+img_bucket = 'lambda-app-images'
 img_url_prefix = 'https://lambda-app-images.s3.amazonaws.com/live/'
 
 def lambda_handler(event, context):
@@ -26,7 +26,7 @@ def lambda_handler(event, context):
             # filter out directory keys
             if item['Key'].endswith('/'):
                 continue
-            file_names.append(item['Key'])
+            file_names.append(item['Key'][5:])
 
         # create return json
         return_obj = make_return_dict(file_names=file_names)
@@ -48,7 +48,7 @@ def lambda_handler(event, context):
 def make_return_dict(file_names:list):
     return {
         "StatusCode": 200,
-        "feed": file_names
+        "filenames": file_names
     }
 
 

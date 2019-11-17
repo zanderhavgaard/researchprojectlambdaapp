@@ -1,6 +1,9 @@
 import sys
 import jinja2
 import json
+import boto3
+
+client = boto3.client('lambda')
 
 html_template = """
 <html>
@@ -21,7 +24,8 @@ html_template = """
 def lambda_handler(event, context):
 
     # TODO get from feedGenerator
-    feed_json = test_dict
+    # feed_json = test_dict
+    feed_json = get_feed()
 
     content_dict = parse_feed_json(feed_json)
 
@@ -59,6 +63,16 @@ def build_return(html):
         }
     }
 
+feed_generator_fx = "FeedGenerator"
+feed_generator_payload = '{"StatusCode":200, "num_items":"all"}'
+
+def get_feed():
+    response = client.invoke(
+        FunctionName=feed_generator_fx,
+        InvocationType='RequestResponse',
+        Payload=feed_generator_payload
+    )
+    return json.load(response['Payload'])
 
 # >>>>> testing <<<<<
 
