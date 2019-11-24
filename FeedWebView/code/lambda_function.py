@@ -2,6 +2,32 @@ import sys
 import jinja2
 import json
 import boto3
+import time
+
+class Timer:
+
+    def __init__(self):
+        # get current time
+        self.start_time = time.time()
+        self.end_time:int
+
+    def __exit__(self):
+        # get end time
+        self.end_time = time.time()
+        # return time diff
+        return self.end_time - self.start_time
+
+    # add time to a return obj
+    def add_time_to_return_obj(self, return_dict, identifyer, time_dict=None):
+        if 'time' not in return_dict.keys():
+            return_dict['time'] = {}
+        if time_dict is not None:
+            for identifier, val in time_dict.items():
+                return_dict['time'][identifier] = val
+        return_dict['time'][identifyer] = self.__exit__()
+        return return_dict
+
+time_dict = {}
 
 client = boto3.client('lambda')
 
@@ -23,15 +49,24 @@ html_template = """
 
 def lambda_handler(event, context):
 
-    # TODO get from feedGenerator
-    # feed_json = test_dict
-    feed_json = get_feed()
+    timer = Timer()
+
+    if event is not None:
+        if event['StatusCode'] != 200:
+            raise Exception("Something went wrong ...")
+        num_items = event['num_items']
+    else:
+        num_items = "all"
+
+    feed_json = get_feed(num_items)
 
     content_dict = parse_feed_json(feed_json)
 
     html = fill_html_template(html_template, content_dict)
 
     response = build_return(html)
+
+    response = timer.add_time_to_return_obj(response, "feed_view", time_dict)
 
     if local_test:
         print(response)
@@ -66,13 +101,23 @@ def build_return(html):
 feed_generator_fx = "FeedGenerator"
 feed_generator_payload = '{"StatusCode":200, "num_items":"all"}'
 
-def get_feed():
+def create_feed_gen_payload(num_items):
+    if num_items == "all":
+        return '{"StatusCode":200, "num_items":"all"}'
+    else:
+        return '{"StatusCode":200, "num_items":' + str(num_items) + '}'
+
+def get_feed(num_items):
     response = client.invoke(
         FunctionName=feed_generator_fx,
         InvocationType='RequestResponse',
-        Payload=feed_generator_payload
+        Payload=create_feed_gen_payload(num_items)
     )
-    return json.load(response['Payload'])
+    payload = json.load(response['Payload'])
+    ptime = payload['time']
+    for identifier, val in ptime.items():
+        time_dict[identifier] = val
+    return payload
 
 # >>>>> testing <<<<<
 
@@ -88,6 +133,8 @@ test_dict = {
 # call the method if running locally
 local_test = bool(sys.argv[1]) if len(sys.argv) > 1 else False
 if local_test:
+    # test_event = {"StatusCode":200, "num_items":"all"}
+    # test_event = {"StatusCode":200, "num_items":1}
     test_event = None
     test_context = None
     lambda_handler(test_event, test_context)
