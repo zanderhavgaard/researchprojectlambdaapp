@@ -36,8 +36,45 @@ curl -v -X GET -H "x-api-key: $aws_api_key" -H "Content-Type:application/json" -
 
 ## FeedGenerator
 
-TODO
+Generates a feed json object by quering Getter lambda.
+
+lives at `<api_gateway>/live/feed-generator`, valid methods are `GET`
+
+Must pass a json of two keys:
+    -`StatusCode` - which should be `200`
+    - `num_items` - which should either be the string `"all"` or an integer
+
+### Example generating a feed of all available posts
+
+``` bash
+curl -v -X GET -H "x-api-key: $aws_api_key" -H "Content-Type:application/json" -d '{"StatusCode": 200, "num_items":"all"}' "$aws_api_gateway/live/feed-generator"
+```
+
+
+### Example of generating a feed of 10 posts
+
+``` bash
+curl -v -X GET -H "x-api-key: $aws_api_key" -H "Content-Type:application/json" -d '{"StatusCode": 200, "num_items":"10"}' "$aws_api_gateway/live/feed-generator"
+```
+
 
 ## FeedWebView
 
-TODO
+TODO finish
+
+``` bash
+curl -v -X GET -H "x-api-key: $aws_api_key" "$aws_api_gateway/live/feed"
+```
+
+### Example generating a feed of all available posts
+
+``` bash
+curl -v -X GET -H "x-api-key: $aws_api_key" -H "Content-Type:application/json" -d '{"StatusCode": 200, "num_items":"all"}' "$aws_api_gateway/live/feed"
+```
+
+
+### Example of generating a feed of 10 posts
+
+``` bash
+curl -v -X GET -H "x-api-key: $aws_api_key" -H "Content-Type:application/json" -d '{"StatusCode": 200, "num_items":"10"}' "$aws_api_gateway/live/feed"
+```
