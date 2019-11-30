@@ -1,13 +1,13 @@
-
 import sys
 import base64
 import json
 import requests
+import os
 
-url = "https://42u1uyqaj4.execute-api.eu-central-1.amazonaws.com/live/putter"
-token = "CmUJkL6EJr9TOiaBNJdmh1BYlKc0VS54a1GHrXFo"
+url = os.environ['aws_api_gateway'] + '/live/putter'
+token = os.environ['aws_api_key']
 
-print('Testing put function')  
+print('Testing put function')
 image_path = sys.argv[1]
 file_name = sys.argv[2]
 print('image path:',image_path)
@@ -35,11 +35,11 @@ with open(image_path, mode='rb') as file:
     # data = json.dumps(json_object)
 
     headers = {'x-api-key':token, 'Content-Type':'application/json'}
-    
+
     response = requests.post(url, data=data,headers=headers)
 
     print(response.status_code)
-   
+
     print(response.text)
     # h = response.headers
     # print(type(response))
