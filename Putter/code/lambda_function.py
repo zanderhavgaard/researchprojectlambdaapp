@@ -22,12 +22,17 @@ def lambda_handler(event, context):
         data = event['body']
         title = data['title']
         img = data['img']
-        image_64_decode = base64.decodestring(img) 
-        array = bytearray(image_64_decode)
-        image = Image.open(io.BytesIO(array))
+        
+        image_64_decode = base64.b64decode(img)
+        pil_image = Image.open(io.BytesIO(image_64_decode))
+        in_mem_file = io.BytesIO()
+        pil_image.save(in_mem_file, format=pil_image.format)
+        in_mem_file.seek(0)
+        file_name = "live/"+ title+".png"
+
        
-        s3.put_object(Bucket=img_bucket, Key=title, Body=image)
-        return {'statusCode': 200, 'body': json.dumps({'message': 'successful image upload'}), 'headers': {'Access-Control-Allow-Origin': '*'}}
+        s3.upload_fileobj(in_mem_file, img_bucket, file_name)
+        return {'statusCode': 200, 'body': json.dumps({'message': title}), 'headers': {'Access-Control-Allow-Origin': '*'}}
 
 
 
