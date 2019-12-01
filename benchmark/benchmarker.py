@@ -33,7 +33,7 @@ class Benchmarker:
         if filename is not '':
             data['filename'] = filename
         response = requests.get(url=url, data=json.dumps(data), headers=self.auth_header)
-        return response
+        return response.json()
 
     def request_putter(self):
         # TODO @Thomas
@@ -43,13 +43,13 @@ class Benchmarker:
        url = self.url_prefix + '/feed-generator'
        data = {'StatusCode':200, 'num_items':num_items}
        response = requests.get(url=url, data=json.dumps(data), headers=self.auth_header)
-       return response
+       return response.json()
 
     def request_feed_webview(self, num_items='all'):
         url = self.url_prefix + '/feed'
         data = {'StatusCode':200, 'num_items':num_items}
         response = requests.get(url=url, data=json.dumps(data), headers=self.auth_header)
-        return response
+        return response.json()
 
     def test_methods(self):
 
