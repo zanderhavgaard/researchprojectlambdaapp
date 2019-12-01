@@ -17,13 +17,20 @@ class Timer:
         return self.end_time - self.start_time
 
     # add time to a return obj
-    def add_time_to_return_obj(self, return_dict, identifyer, time_dict=None):
+    def add_time_to_return_obj(self, return_dict, identifier, time_dict=None):
+        # if the time key is not present
         if 'time' not in return_dict.keys():
             return_dict['time'] = {}
+
+        # if we have saved some timings from other lambda invocations
         if time_dict is not None:
-            for identifier, val in time_dict.items():
-                return_dict['time'][identifier] = val
-        return_dict['time'][identifyer] = self.__exit__()
+            for key, val in time_dict.items():
+                return_dict['time'][key] = val
+
+        # add new timing
+        exe_time = self.__exit__()
+        return_dict['time'][identifier] = {'exe_time': exe_time}
+
         return return_dict
 
 time_dict = {}
@@ -54,7 +61,12 @@ def lambda_handler(event, context):
 
     return_obj = make_return_obj(filename_urls_dict=feed)
 
-    return_obj = timer.add_time_to_return_obj(return_obj, "feed_generator", time_dict)
+    identifier = 'Feed-Generator'
+    return_obj = timer.add_time_to_return_obj(return_obj, identifier, time_dict)
+    # add metadata to response
+    return_obj['identifier'] = identifier
+    if context is not None:
+        return_obj['memory'] = context.memory_limit_in_mb
 
     if local_test:
         print(return_obj)
@@ -63,19 +75,6 @@ def lambda_handler(event, context):
 
 def make_return_obj(filename_urls_dict:dict):
     return {"StatusCode":200, "feed":filename_urls_dict}
-
-def get_file_names_as_list():
-    response = client.invoke(
-        FunctionName=getter_fx_name,
-        InvocationType='RequestResponse', # syncrhonous
-        # InvocationType='Event', # asynchronous
-            Payload=get_all_payload
-    )
-    payload = json.load(response['Payload'])
-    ptime = payload['time']
-    for identifier, val in ptime.items():
-        time_dict[identifier] = val
-    return payload['filenames']
 
 def create_feed(response_list:list, limit:int):
     return_dict = {}
@@ -87,16 +86,37 @@ def create_feed(response_list:list, limit:int):
             break
     return return_dict
 
-def get_file_url_by_filename(filename:str):
+def invoke_lambda(lambda_name, invoke_payload):
+    total_time = Timer()
     response = client.invoke(
-        FunctionName=getter_fx_name,
-        InvocationType='RequestResponse',
-        Payload=make_get_filename_url_payload(filename=filename)
+        FunctionName=lambda_name,
+        InvocationType='RequestResponse', # syncrhonous
+        # InvocationType='Event', # asynchronous
+        Payload=invoke_payload
     )
+    total_time = total_time.__exit__()
+
     payload = json.load(response['Payload'])
+
     ptime = payload['time']
+
     for identifier, val in ptime.items():
         time_dict[identifier] = val
+
+    latency = total_time - payload['time'][payload['identifier']]['exe_time']
+
+    time_dict[payload['identifier']]['total_time'] = total_time
+    time_dict[payload['identifier']]['latency'] = latency
+    time_dict[payload['identifier']]['memory'] = payload['memory']
+
+    return payload
+
+def get_file_names_as_list():
+    payload = invoke_lambda(lambda_name=getter_fx_name, invoke_payload=get_all_payload)
+    return payload['filenames']
+
+def get_file_url_by_filename(filename:str):
+    payload = invoke_lambda(lambda_name=getter_fx_name, invoke_payload=make_get_filename_url_payload(filename=filename))
     return payload['filename']
 
 def make_get_filename_url_payload(filename:str):

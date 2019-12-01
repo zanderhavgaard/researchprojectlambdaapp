@@ -16,13 +16,20 @@ class Timer:
         return self.end_time - self.start_time
 
     # add time to a return obj
-    def add_time_to_return_obj(self, return_dict, identifyer, time_dict=None):
+    def add_time_to_return_obj(self, return_dict, identifier, time_dict=None):
+        # if the time key is not present
         if 'time' not in return_dict.keys():
             return_dict['time'] = {}
+
+        # if we have saved some timings from other lambda invocations
         if time_dict is not None:
-            for identifier, val in time_dict.items():
-                return_dict['time'][identifier] = val
-        return_dict['time'][identifyer] = self.__exit__()
+            for key, val in time_dict.items():
+                return_dict['time'][key] = val
+
+        # add new timing
+        exe_time = self.__exit__()
+        return_dict['time'][identifier] = {'exe_time': exe_time}
+
         return return_dict
 
 time_dict = {}
@@ -59,7 +66,7 @@ def lambda_handler(event, context):
         # create return json
         return_obj = make_return_dict_list(file_names=file_names)
 
-        identifyer = "Getter_list"
+        identifier = "Getter_list"
 
     # should return an absolute url for the file with the filename
     elif command == 'get_file_url':
@@ -70,9 +77,13 @@ def lambda_handler(event, context):
         # create string of absolute url
         return_obj = make_return_dict_filename(img_url_prefix + event['filename'])
 
-        identifyer = "Getter_" + event['filename']
+        identifier = "Getter_" + event['filename']
 
-    return_obj = timer.add_time_to_return_obj(return_obj, identifyer)
+    return_obj = timer.add_time_to_return_obj(return_obj, identifier)
+    # add metadata to response
+    return_obj['identifier'] = identifier
+    if context is not None:
+        return_obj['memory'] = context.memory_limit_in_mb
 
     if local_test:
         print(return_obj)
@@ -94,9 +105,9 @@ def make_return_dict_filename(url:str):
 # call the method if running locally
 local_test = bool(sys.argv[1]) if len(sys.argv) > 1 else False
 if local_test:
-    # test_event = {"StatusCode":200, "command":"list"}
-    test_event = {"StatusCode":200,
-                  "command":"get_file_url",
-                  "filename":"green.png"}
+    test_event = {"StatusCode":200, "command":"list"}
+    # test_event = {"StatusCode":200,
+    #               "command":"get_file_url",
+    #               "filename":"green.png"}
     test_context = None
     lambda_handler(test_event, test_context)

@@ -18,13 +18,20 @@ class Timer:
         return self.end_time - self.start_time
 
     # add time to a return obj
-    def add_time_to_return_obj(self, return_dict, identifyer, time_dict=None):
+    def add_time_to_return_obj(self, return_dict, identifier, time_dict=None):
+        # if the time key is not present
         if 'time' not in return_dict.keys():
             return_dict['time'] = {}
+
+        # if we have saved some timings from other lambda invocations
         if time_dict is not None:
-            for identifier, val in time_dict.items():
-                return_dict['time'][identifier] = val
-        return_dict['time'][identifyer] = self.__exit__()
+            for key, val in time_dict.items():
+                return_dict['time'][key] = val
+
+        # add new timing
+        exe_time = self.__exit__()
+        return_dict['time'][identifier] = {'exe_time': exe_time}
+
         return return_dict
 
 time_dict = {}
@@ -64,14 +71,19 @@ def lambda_handler(event, context):
 
     html = fill_html_template(html_template, content_dict)
 
-    response = build_return(html)
+    return_obj = build_return(html)
 
-    response = timer.add_time_to_return_obj(response, "feed_view", time_dict)
+    identifier = 'Feed-WebView'
+    return_obj = timer.add_time_to_return_obj(return_obj, identifier, time_dict)
+    # add metadata to return_obj
+    return_obj['identifier'] = identifier
+    if context is not None:
+        return_obj['memory'] = context.memory_limit_in_mb
 
     if local_test:
-        print(response)
+        print(return_obj)
     else:
-        return response
+        return return_obj
 
 
 def parse_feed_json(feed_json_dict):
@@ -108,15 +120,42 @@ def create_feed_gen_payload(num_items):
         return '{"StatusCode":200, "num_items":' + str(num_items) + '}'
 
 def get_feed(num_items):
+    # response = client.invoke(
+    #     FunctionName=feed_generator_fx,
+    #     InvocationType='RequestResponse',
+    #     Payload=create_feed_gen_payload(num_items)
+    # )
+    # payload = json.load(response['Payload'])
+    # ptime = payload['time']
+    # for identifier, val in ptime.items():
+    #     time_dict[identifier] = val
+
+    payload = invoke_lambda(lambda_name=feed_generator_fx, invoke_payload=create_feed_gen_payload(num_items))
+    return payload
+
+def invoke_lambda(lambda_name, invoke_payload):
+    total_time = Timer()
     response = client.invoke(
-        FunctionName=feed_generator_fx,
-        InvocationType='RequestResponse',
-        Payload=create_feed_gen_payload(num_items)
+        FunctionName=lambda_name,
+        InvocationType='RequestResponse', # syncrhonous
+        # InvocationType='Event', # asynchronous
+        Payload=invoke_payload
     )
+    total_time = total_time.__exit__()
+
     payload = json.load(response['Payload'])
+
     ptime = payload['time']
+
     for identifier, val in ptime.items():
         time_dict[identifier] = val
+
+    latency = total_time - payload['time'][payload['identifier']]['exe_time']
+
+    time_dict[payload['identifier']]['total_time'] = total_time
+    time_dict[payload['identifier']]['latency'] = latency
+    time_dict[payload['identifier']]['memory'] = payload['memory']
+
     return payload
 
 # >>>>> testing <<<<<
