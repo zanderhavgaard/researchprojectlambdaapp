@@ -5,12 +5,19 @@ USE rp;
 
 DROP TABLE IF EXISTS tests, timings, functions;
 
+-- holds human readable names of fxs
+CREATE TABLE functions (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(50)
+);
+
 -- holds metadata for each test run
 CREATE TABLE tests (
        id INT AUTO_INCREMENT PRIMARY KEY,
+       uuid VARCHAR(128),
        complete_json VARCHAR(1000),
-       total_elapsed_time INT,
-       total_calculated_latency INT,
+       total_time DOUBLE,
+       total_latency DOUBLE,
        time_stamp DATE DEFAULT NOW(),
        description VARCHAR(1000),
        concurrent BOOLEAN DEFAULT FALSE,
@@ -18,23 +25,17 @@ CREATE TABLE tests (
        num_threads INT DEFAULT 1
 );
 
--- holds human readable names of fxs
-CREATE TABLE functions (
-       id INT AUTO_INCREMENT PRIMARY KEY,
-       name VARCHAR(50)
-);
-
 -- holds timings for each function invocation
 CREATE TABLE timings (
        id INT AUTO_INCREMENT PRIMARY KEY,
+       test_uuid VARCHAR(128),
        fx_id INT,
-       test_id INT,
-       total_time INT,
-       exe_time INT,
-       latency INT,
+       total_time DOUBLE,
+       exe_time DOUBLE,
+       latency DOUBLE,
        memory_limit INT,
        FOREIGN KEY (fx_id) REFERENCES functions (id),
-       FOREIGN KEY (test_id) REFERENCES tests (id)
+       FOREIGN KEY (test_uuid) REFERENCES tests (uuid)
 );
 
 -- insert function names
