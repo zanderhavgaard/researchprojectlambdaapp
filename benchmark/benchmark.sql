@@ -15,7 +15,7 @@ CREATE TABLE functions (
 CREATE TABLE tests (
        id INT AUTO_INCREMENT PRIMARY KEY,
        uuid VARCHAR(128),
-       complete_json VARCHAR(1000),
+       complete_json VARCHAR(5000),
        total_time DOUBLE,
        total_latency DOUBLE,
        time_stamp DATE DEFAULT NOW(),
