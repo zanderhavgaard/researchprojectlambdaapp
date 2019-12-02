@@ -11,29 +11,29 @@ class SQL_Interface:
         self.database = 'rp'
 
     def insert_query(self, query:str, values:tuple=None):
-        with mysql.connect(
+        connection = mysql.connect(
                 host=self.host,
                 user=self.user,
                 passwd=self.password,
                 database=self.database
-        ) as connection:
-            try:
-                cursor = connection.cursor()
-                if values is None:
-                    cursor.execute(query)
-                else:
-                    cursor.execute(query, values)
-                cursor.commit()
-                return True
-            except Exception as e:
-                print('Caught an exception while executing query ...', str(e))
-                return False
+        )
+        try:
+            cursor = connection.cursor()
+            if values is None:
+                cursor.execute(query)
+            else:
+                cursor.execute(query, values)
+            connection.commit()
+            return True
+        except Exception as e:
+            print('Caught an exception while executing query ...', str(e))
+            return False
 
     def insert_test(self, td:TestData):
         query = "INSERT INTO tests (uuid, complete_json, total_time, total_latency, description, concurrent, thread_num, num_threads) VALUES ('{}', '{}', {}, {}, '{}', {}, {}, {})".format(
             td.uuid, td.complete_json, td.total_time, td.total_latency, td.description, int(td.concurrent), td.thread_num, td.num_threads
         )
-        print(query)
+        # print(query)
 
         self.insert_query(query=query)
 
@@ -44,6 +44,6 @@ class SQL_Interface:
         query = "INSERT INTO timings (test_uuid, fx_id, total_time, exe_time, latency, memory_limit) VALUES ('{}', {}, {}, {}, {}, {})".format(
             t.test_uuid, t.function_id, t.total_time, t.exe_time, t.latency, t.memory_limit
         )
-        print(query)
+        # print(query)
 
         self.insert_query(query=query)

@@ -34,9 +34,11 @@ CREATE TABLE timings (
        exe_time DOUBLE,
        latency DOUBLE,
        memory_limit INT,
-       FOREIGN KEY (fx_id) REFERENCES functions (id),
-       FOREIGN KEY (test_uuid) REFERENCES tests (uuid)
+       FOREIGN KEY (fx_id) REFERENCES functions (id)
 );
+
+-- TODO fix
+-- FOREIGN KEY (test_uuid) REFERENCES tests (uuid)
 
 -- insert function names
 INSERT INTO functions (name) VALUES
