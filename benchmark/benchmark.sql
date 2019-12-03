@@ -18,7 +18,7 @@ CREATE TABLE tests (
        complete_json VARCHAR(5000),
        total_time DOUBLE,
        total_latency DOUBLE,
-       time_stamp DATE DEFAULT NOW(),
+       time_stamp TIMESTAMP DEFAULT NOW(),
        description VARCHAR(1000),
        concurrent BOOLEAN DEFAULT FALSE,
        thread_num INT DEFAULT 1,
