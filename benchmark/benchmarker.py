@@ -144,14 +144,14 @@ class Benchmarker:
         return test_data_list
 
     def testConcurrent(self):
-        self.sql_interface = SQL_Interface()
+        # self.sql_interface = SQL_Interface()
 
-        # self.run_method_concurrently('Getter', {'command':'list'}, 4)
+        # test_data_list = self.run_method_concurrently('Getter', {'command':'list'}, 1)
         test_data_list = self.run_method_concurrently('FeedGenerator', {'num_items': 'all'}, 1)
 
         for td in test_data_list:
             td.print_data()
-            self.sql_interface.insert_test(td)
+            # self.sql_interface.insert_test(td)
 
     def benchmark(self):
         # print('api_key:', self.api_key)

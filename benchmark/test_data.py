@@ -57,7 +57,7 @@ class TestData:
         return timings
 
     def parse_log_stream_name(self, log_stream_name:str):
-        return re.findall(pattern='.*\]([a-zA-Z0-9]+)', string=log_stream_name)
+        return re.findall(pattern='.*\]([a-zA-Z0-9]+)', string=log_stream_name)[0]
 
 
     def find_lambda_id(self, fx_name:str):
