@@ -86,6 +86,10 @@ class Benchmarker:
         print('feed - 2', feed_2)
 
     def request_concurrent_wrapper(self, method_name:str, method_args:dict, thread_num:int, num_threads:int, barrier:mp.Barrier, recieve_pipe:mp.Pipe):
+
+        # wait for all threads
+        barrier.wait()
+
         # call the appropriate request method
         if method_name == 'Getter':
             if method_args['command'] == 'list':
@@ -144,14 +148,14 @@ class Benchmarker:
         return test_data_list
 
     def testConcurrent(self):
-        self.sql_interface = SQL_Interface()
+        # self.sql_interface = SQL_Interface()
 
         # test_data_list = self.run_method_concurrently('Getter', {'command':'list'}, 1)
-        test_data_list = self.run_method_concurrently('FeedGenerator', {'num_items': 'all'}, 1)
+        test_data_list = self.run_method_concurrently('FeedGenerator', {'num_items': 'all'}, 2)
 
         for td in test_data_list:
             td.print_data()
-            self.sql_interface.insert_test(td)
+            # self.sql_interface.insert_test(td)
 
     def benchmark(self):
         # print('api_key:', self.api_key)
