@@ -34,6 +34,7 @@ CREATE TABLE timings (
        exe_time DOUBLE,
        latency DOUBLE,
        memory_limit INT,
+       log_stream_name VARCHAR(100),
        FOREIGN KEY (fx_id) REFERENCES functions (id)
 );
 

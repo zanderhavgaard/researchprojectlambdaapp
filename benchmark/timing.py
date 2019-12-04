@@ -8,7 +8,8 @@ class Timing:
             total_time:float,
             exe_time:float,
             latency:float,
-            memory_limit:int
+            memory_limit:int,
+            log_stream_name:str
     ):
         self.test_uuid = test_uuid
         self.function_name = function_name
@@ -17,6 +18,7 @@ class Timing:
         self.exe_time = exe_time
         self.latency = latency
         self.memory_limit = memory_limit
+        self.log_stream_name = log_stream_name
 
     def set_test_id(self, test_id:int):
         self.test_id = test_id
@@ -29,5 +31,6 @@ class Timing:
               'total_time', self.total_time,
               'exe_time', self.exe_time,
               'latency', self.latency,
-              'memory_limit', self.memory_limit
+              'memory_limit', self.memory_limit,
+              'log_stream_name', self.log_stream_name
         )

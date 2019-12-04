@@ -1,7 +1,7 @@
 import json
 import uuid
+import re
 from timing import Timing
-
 
 class TestData:
 
@@ -34,10 +34,6 @@ class TestData:
         self.thread_num = thread_num
         self.num_threads = num_threads
 
-
-    def parse_json(self, json_dict:dict):
-        self.parse_timings(json_dict['time'])
-
     def compute_total_latency(self, time_dict:dict):
         latency = 0.0
         for key in time_dict.keys():
@@ -54,10 +50,15 @@ class TestData:
                 total_time=time_dict[key]['total_time'],
                 exe_time=time_dict[key]['exe_time'],
                 latency=time_dict[key]['latency'],
-                memory_limit=time_dict[key]['memory']
+                memory_limit=time_dict[key]['memory'],
+                log_stream_name=self.parse_log_stream_name(time_dict[key]['log_stream_name'])
             )
             timings.append(timing)
         return timings
+
+    def parse_log_stream_name(self, log_stream_name:str):
+        return re.findall(pattern='.*\]([a-zA-Z0-9]+)', string=log_stream_name)
+
 
     def find_lambda_id(self, fx_name:str):
         for key in self.fx_name_to_id.keys():

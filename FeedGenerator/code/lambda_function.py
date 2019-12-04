@@ -67,6 +67,7 @@ def lambda_handler(event, context):
     return_obj['identifier'] = identifier
     if context is not None:
         return_obj['memory'] = context.memory_limit_in_mb
+        return_obj['time'][identifier]['log_stream_name'] = context.log_stream_name
 
     if local_test:
         print(return_obj)
