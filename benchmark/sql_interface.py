@@ -47,3 +47,6 @@ class SQL_Interface:
         # print(query)
 
         self.insert_query(query=query)
+
+    def insert_coldtimes(arg):
+        query = "INSERT INTO "

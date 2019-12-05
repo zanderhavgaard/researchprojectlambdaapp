@@ -112,10 +112,10 @@ class Benchmarker:
 # ==============================
 # >>>>> run the benchmarks <<<<<
 
-benchmarker = Benchmarker()
+# benchmarker = Benchmarker()
 
 # test that methods work...
 # benchmarker.test_methods()
 
 # run benchmarks!
-benchmarker.benchmark()
+# benchmarker.benchmark()
