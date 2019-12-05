@@ -39,29 +39,26 @@ CREATE TABLE timings (
 );
 
 -- Values for warm to cold experiments
+-- IMPORTANT: pull max min
 CREATE TABLE coldtimes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     fx_id INT,
-    test_id Int,
+    uuid VARCHAR(128),
+    time_stamp TIMESTAMP DEFAULT NOW(),
     numb_minutes INT,
     latency DOUBLE,
     offset DOUBLE,
     within_bounds BOOLEAN,
-    final_result BOOLEAN
+    final_result BOOLEAN,
     lower_bound DOUBLE DEFAULT NULL,
     upper_bound DOUBLE DEFAULT NULL,
-    avg_latency DOUBLE DEFAULT NULL,
-    avg_minutes DOUBLE DEFAULT NULL,
-    avg_offset DOUBLE DEFAULT NULL,
     min_latency DOUBLE DEFAULT NULL,
     max_latency DOUBLE DEFAULT NULL,
     min_minutes INT DEFAULT NULL,
-    max_minutes INT DEFAULT NULL,
     min_offset DOUBLE DEFAULT NULL,
     max_offset DOUBLE DEFAULT NULL,
 
     FOREIGN KEY (fx_id) REFERENCES functions (id),
-    FOREIGN Key (test_id) REFERENCES tests (id)
 );
 
        

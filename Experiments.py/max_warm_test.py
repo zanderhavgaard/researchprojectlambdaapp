@@ -3,24 +3,27 @@ import time
 import sys
 import os
 import json
+import uuid
 
 from benchmarker import Benchmarker 
 from sql_interface import SQL_Interface
+from test_data import TestData
 
 class max_warm_test:
 
-    def __init__(self,fux,filename,interval,offset,accuracy:float):
+    def __init__(self,fux,interval,offset,accuracy:float):
         self.lambda_function = fux
-        self.filename = filename
+        self.fux_id = self.get_function_id(fux)
+        # self.filename = filename
         self.interval = interval
         self.offset = offset
         self.accuracy = accuracy
         self.bench = Benchmarker()
+        self.SQL = SQL_Interface()
+        self.uuid = uuid.uuid1()
         self.run()
 
 
-        
-    
         
     def compute_avg(self,l=list):
         total_value = 0
@@ -43,6 +46,17 @@ class max_warm_test:
             avg_time_list.append(latency)
         
         return avg_time_list
+
+
+
+    def get_function_id(self,lambda_name):
+        switcher = {
+            'putter'        : 1,
+            'getter'        : 2,
+            'feed_generator': 3,
+            'feed_webview'  : 4
+        }
+        return switcher.get(lambda_name,'Error function name')
         
             
     # Executing the experiment and returning minutes for lambda to go from warm to cold
@@ -72,7 +86,9 @@ class max_warm_test:
                 # compute latency of call after making the function sleep
                 print('sleeping for minutes',minutes) # delete
                 time.sleep(60*minutes)
-                test_data = self.bench.request_getter(command='get_file_url',filename="blue.png") 
+                test_data = self.bench.request_getter(command='get_file_url',filename="blue.png")
+                test_data.description = self.uuid 
+                self.SQL.insert_test(test_data)
                 response_dict = test_data.json_dict
                 latency = response_dict['time'][response_dict['identifier']]['latency']
             
@@ -121,7 +137,6 @@ class max_warm_test:
             avg_time += t
             avg_min += m
             avg_offset = o
-            # print(t,m,o)
 
             if t < min_time:
                 min_time = t
@@ -141,8 +156,9 @@ class max_warm_test:
             if t < cold_minus_risk:
                 minus_risk = False
 
-            # put in database
+            
             print('Run:',i,'latency:',str(t),'minutes from warm to cold:',m,'ofsset used:',o,'within upper bound:',t > cold_plus_risk,'within lower bound',t < cold_minus_risk)
+           
 
         print()
         print('Averaged values for all runs')
@@ -154,13 +170,19 @@ class max_warm_test:
         print('All rund within upper bound:',plus_risk)
         print('All rund within lower bound:',minus_risk)
 
-        return (avg_time,avg_min,avg_offset,plus_risk and minus_risk)
+        self.SQL.insert_coldtimes_run_avg(self.fux_id,self.uuid,max_time,avg_time,avg_offset,(plus_risk and minus_risk),cold_minus_risk,
+        cold_plus_risk,min_time,max_time,min_min,max_min,min_offset,max_offset)
+
+        return (avg_time,max_min,avg_offset,plus_risk and minus_risk) # maybe return avg minutes too
 
 
 
     def run(self):
 
-        test_data = self.bench.request_getter(command='get_file_url',filename="blue.png") 
+        test_data = self.bench.request_getter(command='get_file_url',filename="blue.png")
+        test_data.description = self.uuid
+        self.SQL.insert_test(test_data) 
+
         response_dict = test_data.json_dict
         cold_time = response_dict['time'][response_dict['identifier']]['latency']
 
@@ -169,7 +191,6 @@ class max_warm_test:
         avg_warm_time = self.compute_avg(self.avg_warm_time())
 
         print('Time for average warm function call:',avg_warm_time)
-
         print('warm function is',cold_time / avg_warm_time,'times faster')
 
 
@@ -183,26 +204,27 @@ class max_warm_test:
         print('interval',self.interval)
         first_run = self.get_warm_cutoff(cold_time,avg_warm_time * (1 + self.accuracy),self.interval,self.interval,self.offset)
 
-        (latency,minutes,ofset,b) = self.output_reults(first_run,cold_plus_risk,cold_minus_risk)
-        print('first run was within expected bounds?',b)
+        print()
+        print('first run')
+        (latency,minutes,offset,b) = self.output_reults(first_run,cold_plus_risk,cold_minus_risk)
+        self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,minutes,latency,offset,b,False)
+        print('latency:',latency,'minutes to cold:',minutes,'offset used:',offset,'within expected bounds:',b,'bounds',(latency* (1 + self.accuracy)),(latency * self.accuracy))
 
         # Run again with inputs from first run and reduced interval and offset for greater accuracy 
-        # FIxXthis!!!! minutes-self.interval WHY
         print()
         print('SECOND RUN')
         print()
         second_run = self.get_warm_cutoff(latency,avg_warm_time,minutes-self.interval,self.interval/2,self.offset/2)
-        (l,m,o,b) = self.output_reults(second_run,latency * (1 + (1 - self.accuracy)),latency * (1 - self.accuracy))
+        (l,m,o,b2) = self.output_reults(second_run,latency * (1 + (1 - self.accuracy)),latency * (1 - self.accuracy))
+        self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,m,l,o,b2,True)
 
         print()
         print('final result')
-        print('latency:',l,'minutes to cold:',m,'offset used:',o,'within expected bounds:',b,'bounds',(latency* (1 + self.accuracy)),(latency * self.accuracy))
+        print('latency:',l,'minutes to cold:',m,'offset used:',o,'within expected bounds:',b2,'bounds',(latency* (1 + self.accuracy)),(latency * self.accuracy))
 
 
 
 # could make switch that returns method and arguments to make experiemnt flexible and generic for all lambdas
-
-
 
 
 

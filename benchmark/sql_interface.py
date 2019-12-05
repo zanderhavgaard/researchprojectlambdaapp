@@ -41,12 +41,45 @@ class SQL_Interface:
             self.insert_timing(timing)
 
     def insert_timing(self, t:Timing):
-        query = "INSERT INTO timings (test_uuid, fx_id, total_time, exe_time, latency, memory_limit, log_stream_name) VALUES ('{}', {}, {}, {}, {}, {}, '{}')".format(
-            t.test_uuid, t.function_id, t.total_time, t.exe_time, t.latency, t.memory_limit, t.log_stream_name
+        query = "INSERT INTO timings (test_uuid, fx_id, total_time, exe_time, latency, memory_limit) VALUES ('{}', {}, {}, {}, {}, {})".format(
+            t.test_uuid, t.function_id, t.total_time, t.exe_time, t.latency, t.memory_limit
         )
         # print(query)
 
         self.insert_query(query=query)
 
-    def insert_coldtimes(arg):
-        query = "INSERT INTO "
+    def insert_coldtimes_finalrun(self,fx_id,uuid,minutes,latency,offset,in_bound,final):
+        query = "INSERT INTO coldtimes (fx_id, uuid, numb_minutes, latency, offset, final_result) VALUES ({},'{}',{},{},{},{},{})".format(
+            fx_id,
+            uuid,
+            minutes,
+            latency,
+            offset,
+            in_bound,
+            final
+        )
+
+        self.insert_query(query=query)
+    
+    def insert_coldtimes_run_avg(self,fx_id,uuid,minutes,latency,offset,in_bound,low_b,up_b,min_la,max_la,min_minu,max_minu,min_off,max_off):
+        query = "INSERT INTO coldtimes (fx_id,uuid,numb_minutes,layency,offset,within_bounds,lower_bound,upper_bound,min_latency,max_latency,"\
+        "min_minutes,max_minutes,min_offset,max_offset) VALUES ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{})".format(
+            fx_id,
+            uuid,
+            minutes,
+            latency,
+            offset,
+            in_bound,
+            False,
+            low_b,
+            up_b,
+            min_la,
+            max_la,
+            min_minu,
+            max_minu,
+            min_off,
+            max_off
+        )
+
+        self.insert_query(query=query)
+
