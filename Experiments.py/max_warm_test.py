@@ -11,10 +11,10 @@ from test_data import TestData
 
 class max_warm_test:
 
-    def __init__(self,fux,interval,offset,accuracy:float):
+    def __init__(self,fux,filename,interval,offset,accuracy:float):
         self.lambda_function = fux
         self.fux_id = self.get_function_id(fux)
-        # self.filename = filename
+        self.filename = filename
         self.interval = interval
         self.offset = offset
         self.accuracy = accuracy

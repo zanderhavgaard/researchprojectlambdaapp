@@ -58,7 +58,7 @@ CREATE TABLE coldtimes (
     min_offset DOUBLE DEFAULT NULL,
     max_offset DOUBLE DEFAULT NULL,
 
-    FOREIGN KEY (fx_id) REFERENCES functions (id),
+    FOREIGN KEY (fx_id) REFERENCES functions (id)
 );
 
        
