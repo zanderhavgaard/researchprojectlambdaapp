@@ -74,12 +74,7 @@ class max_warm_test:
         vals = []
 
         for i in range(5):
-            # print()
-            # print('local increment',increment) #delete
-            # print('measure',longest_meassured) # delete
-            # print('cold - offset',cold,local_offset) # delete
-            # print('bool',longest_meassured < cold - local_offset) # delete
-            # print()
+           
             # check if meassured time falls into span defined for cold
             print('longest:',longest_meassured,'cold-offset:',cold-local_offset)
             while longest_meassured < cold - local_offset:
@@ -192,20 +187,25 @@ class max_warm_test:
 
         print('Time for average warm function call:',avg_warm_time)
         print('warm function is',cold_time / avg_warm_time,'times faster')
+        print()
 
 
         cold_plus_risk = cold_time * (1 + (1 - self.accuracy))
         cold_minus_risk = cold_time * (1 - self.accuracy)
 
+        # protect against non cold start
         if avg_warm_time > cold_minus_risk:
             print('Lambda seems to have been warm when experiment was started - coldtime:',cold_time,'warmtime:',avg_warm_time)
-
+            print('sleeping for 90 minutes and will re-run experiment')
+            time.sleep(60*90)
+            self.run()
         # First run of meassurements
         print('interval',self.interval)
         first_run = self.get_warm_cutoff(cold_time,avg_warm_time * (1 + self.accuracy),self.interval,self.interval,self.offset)
 
         print()
         print('first run')
+
         (latency,minutes,offset,b) = self.output_reults(first_run,cold_plus_risk,cold_minus_risk)
         self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,minutes,latency,offset,b,False)
         print('latency:',latency,'minutes to cold:',minutes,'offset used:',offset,'within expected bounds:',b,'bounds',(latency* (1 + self.accuracy)),(latency * self.accuracy))
@@ -214,6 +214,7 @@ class max_warm_test:
         print()
         print('SECOND RUN')
         print()
+
         second_run = self.get_warm_cutoff(latency,avg_warm_time,minutes-self.interval,self.interval/2,self.offset/2)
         (l,m,o,b2) = self.output_reults(second_run,latency * (1 + (1 - self.accuracy)),latency * (1 - self.accuracy))
         self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,m,l,o,b2,True)
