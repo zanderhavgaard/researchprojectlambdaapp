@@ -18,7 +18,7 @@ CREATE TABLE tests (
        complete_json VARCHAR(5000),
        total_time DOUBLE,
        total_latency DOUBLE,
-       time_stamp DATE DEFAULT NOW(),
+       time_stamp TIMESTAMP DEFAULT NOW(),
        description VARCHAR(1000),
        concurrent BOOLEAN DEFAULT FALSE,
        thread_num INT DEFAULT 1,
@@ -34,6 +34,7 @@ CREATE TABLE timings (
        exe_time DOUBLE,
        latency DOUBLE,
        memory_limit INT,
+       log_stream_name VARCHAR(100),
        FOREIGN KEY (fx_id) REFERENCES functions (id)
 );
 
