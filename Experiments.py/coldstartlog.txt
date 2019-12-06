@@ -1,0 +1,7 @@
+Time for cold function - getter - meassured time: 0.11141562461853027
+Time for average warm function call: 0.11351091861724853
+warm function is 0.9815410356620983 times faster
+
+
+Lambda seems to have been warm when experiment was started - coldtime: 0.11141562461853027 warmtime: 0.11351091861724853
+sleeping for 90 minutes and will re-run experiment

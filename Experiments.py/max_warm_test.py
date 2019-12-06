@@ -9,7 +9,14 @@ from benchmarker import Benchmarker
 from sql_interface import SQL_Interface
 from test_data import TestData
 
+def print(string:str='\n'):
+    with open("coldstartlog.txt", "a") as logfile:
+        logfile.write(string + '\n')
+
+
 class max_warm_test:
+
+    global print
 
     def __init__(self,fux,filename,interval,offset,accuracy:float):
         self.lambda_function = fux
@@ -40,7 +47,7 @@ class max_warm_test:
 
         for i in range(10):
         
-            test_data = self.bench.request_getter(command='get_file_url',filename=self.filename) # arguments
+            test_data = self.bench.request_getter(command='get_file_url',filename=self.filename) 
             response_dict = test_data.json_dict
             latency= response_dict['time'][response_dict['identifier']]['latency']
             avg_time_list.append(latency)
@@ -74,18 +81,18 @@ class max_warm_test:
 
         for i in range(5):
             print()
-            print('Starting run',i,'Minutes used = ',minutes,'offset used = ',local_offset)
+            print('Starting run ' + str(i) + ' Minutes used = ' + str(minutes) + ' offset used = ' + str(local_offset))
             print()
            
             # check if meassured time falls into span defined for cold
-            print('longest:',longest_meassured,'cold-offset:',cold-local_offset)
+            print('longest: ' + str(longest_meassured) + ' cold-offset: ' + str(cold-local_offset))
             while longest_meassured < cold - local_offset:
                 # compute latency of call after making the function sleep
-                print('sleeping for minutes',minutes) # delete
+                print('sleeping for minutes ' + str(minutes)) # delete
                 time.sleep(60*minutes)
                 test_data = self.bench.request_getter(command='get_file_url',filename="blue.png")
                 test_data.description = self.uuid 
-                self.SQL.insert_test(test_data)
+                # self.SQL.insert_test(test_data)
                 response_dict = test_data.json_dict
                 latency = response_dict['time'][response_dict['identifier']]['latency']
             
@@ -108,8 +115,8 @@ class max_warm_test:
     def output_reults(self,list1,cold_plus_risk,cold_minus_risk):
 
         print('Outputting results')
-        print('plus_risk',cold_plus_risk)
-        print('minus_risk',cold_minus_risk)
+        print('plus_risk '+ str(cold_plus_risk))
+        print('minus_risk ' + str (cold_minus_risk))
 
         # values to be outputted
         avg_time = 0
@@ -152,21 +159,21 @@ class max_warm_test:
                 minus_risk = False
 
             
-            print('Run:',i,'latency:',str(t),'minutes from warm to cold:',m,'ofsset used:',o,'within upper bound:',t > cold_plus_risk,'within lower bound',t < cold_minus_risk)
+            print('Run: '+'latency: '+str(t) +' minutes from warm to cold: '+ str(m) + ' ofsset used: '+ str(o) +' within upper bound: '+ str(t > cold_plus_risk) +' within lower bound '+ str(t < cold_minus_risk))
            
 
         print()
         print('Averaged values for all runs')
-        print('latency:',str(avg_time/len(list1)),'minutes:',str(avg_min/len(list1)),'offset:',str(avg_offset/len(list1)))
+        print('latency: '+ str(avg_time/len(list1)) + ' minutes: ' + str(avg_min/len(list1)) + ' offset: ' + str(avg_offset/len(list1)))
         print()
-        print('min time:',str(min_time),'max time:',str(max_time))
-        print('min minutes:',min_min,'max minutes:',max_min)
-        print('min offset:',min_offset,'max offset',max_offset)
-        print('All rund within upper bound:',plus_risk)
-        print('All rund within lower bound:',minus_risk)
+        print('min time: ' + str(min_time) + ' max time: ' + str(max_time))
+        print('min minutes: ' + str(min_min) + ' max minutes: ' + str(max_min))
+        print('min offset: ' + str(min_offset) + ' max offset ' + str(max_offset))
+        print('All rund within upper bound: ' + str(plus_risk))
+        print('All rund within lower bound: '+ str(minus_risk))
 
-        self.SQL.insert_coldtimes_run_avg(self.fux_id,self.uuid,max_time,avg_time,avg_offset,(plus_risk and minus_risk),cold_minus_risk,
-        cold_plus_risk,min_time,max_time,min_min,max_min,min_offset,max_offset)
+        # self.SQL.insert_coldtimes_run_avg(self.fux_id,self.uuid,max_time,avg_time,avg_offset,(plus_risk and minus_risk),cold_minus_risk,
+        # cold_plus_risk,min_time,max_time,min_min,max_min,min_offset,max_offset)
 
         return (avg_time,max_min,avg_offset,plus_risk and minus_risk) # maybe return avg minutes too
 
@@ -176,17 +183,17 @@ class max_warm_test:
 
         test_data = self.bench.request_getter(command='get_file_url',filename="blue.png")
         test_data.description = self.uuid
-        self.SQL.insert_test(test_data) 
+        # self.SQL.insert_test(test_data) 
 
         response_dict = test_data.json_dict
         cold_time = response_dict['time'][response_dict['identifier']]['latency']
 
-        print('Time for cold function -',self.lambda_function,'- meassured time:',str(cold_time))
+        print('Time for cold function - '+ self.lambda_function + ' - meassured time: ' + str(cold_time))
 
         avg_warm_time = self.compute_avg(self.avg_warm_time())
 
-        print('Time for average warm function call:',avg_warm_time)
-        print('warm function is',cold_time / avg_warm_time,'times faster')
+        print('Time for average warm function call: ' + str(avg_warm_time))
+        print('warm function is ' + str(cold_time / avg_warm_time) + ' times faster')
         print()
 
 
@@ -195,20 +202,20 @@ class max_warm_test:
 
         # protect against non cold start
         if avg_warm_time > cold_minus_risk:
-            print('Lambda seems to have been warm when experiment was started - coldtime:',cold_time,'warmtime:',avg_warm_time)
+            print('Lambda seems to have been warm when experiment was started - coldtime: ' + str(cold_time) + ' warmtime: ' + str(avg_warm_time))
             print('sleeping for 90 minutes and will re-run experiment')
             time.sleep(60*90)
             self.run()
         # First run of meassurements
-        print('interval',self.interval)
+        print('interval ' + str(self.interval))
         first_run = self.get_warm_cutoff(cold_time,avg_warm_time * (1 + self.accuracy),self.interval,self.interval,self.offset)
 
         print()
         print('first run')
 
         (latency,minutes,offset,b) = self.output_reults(first_run,cold_plus_risk,cold_minus_risk)
-        self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,minutes,latency,offset,b,False)
-        print('latency:',latency,'minutes to cold:',minutes,'offset used:',offset,'within expected bounds:',b,'bounds',(latency* (1 + self.accuracy)),(latency * self.accuracy))
+        # self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,minutes,latency,offset,b,False)
+        print('latency: ' + str(latency) + ' minutes to cold: ' + str(minutes) + ' offset used: ' + str(offset) + ' within expected bounds: ' + str(b),'bounds ' + str(latency* (1 + self.accuracy)) + ' ' +str(latency * self.accuracy))
 
         # Run again with inputs from first run and reduced interval and offset for greater accuracy 
         print()
@@ -217,11 +224,11 @@ class max_warm_test:
 
         second_run = self.get_warm_cutoff(latency,avg_warm_time,minutes-self.interval,self.interval/2,self.offset/2)
         (l,m,o,b2) = self.output_reults(second_run,latency * (1 + (1 - self.accuracy)),latency * (1 - self.accuracy))
-        self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,m,l,o,b2,True)
+        # self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,m,l,o,b2,True)
 
         print()
         print('final result')
-        print('latency:',l,'minutes to cold:',m,'offset used:',o,'within expected bounds:',b2,'bounds',(latency* (1 + self.accuracy)),(latency * self.accuracy))
+        print('latency: ' + str(l) + ' minutes to cold: ' + str(m) + ' offset used: ' + str(o) + ' within expected bounds: ' + str(b2) + ' bounds ' + str(latency* (1 + self.accuracy)) +' ' + str(latency * self.accuracy))
 
 
 
