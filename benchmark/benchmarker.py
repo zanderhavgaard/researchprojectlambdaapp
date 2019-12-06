@@ -4,6 +4,7 @@ import os
 import time
 import json
 import requests
+import base64
 import multiprocessing as mp
 from timer import Timer
 from test_data import TestData
@@ -40,9 +41,31 @@ class Benchmarker:
         response_dict = self.insert_timing_for_called_lambda(resp=response, total_time=total_time)
         return TestData(complete_json=response_dict)
 
-    def request_putter(self):
-        # TODO @Thomas
-        raise NotImplementedError()
+    def request_putter(self, image_path, filename):
+
+        with open(image_path, mode='rb') as file:
+            img = file.read()
+            image_64_encode = base64.encodebytes(img).decode("utf-8")
+
+            json_object = {
+                "HTTPMethod":"POST",
+                "StatusCode":200,
+                "body": {
+                    "title":filename,
+                    "img":image_64_encode
+                }
+            }
+
+            url = self.url_prefix + "/putter"
+            data = json.dumps(json_object)
+            headers = self.auth_header
+            total_time = Timer()
+            response = requests.post(url, data=data,headers=headers)
+            total_time = total_time.__exit__()
+            response_dict = self.insert_timing_for_called_lambda(resp=response, total_time=total_time)
+            return TestData(complete_json=response_dict)
+
+
 
     def request_feed_generator(self, num_items='all'):
        url = self.url_prefix + '/feed-generator'
