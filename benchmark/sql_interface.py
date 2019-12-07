@@ -24,6 +24,7 @@ class SQL_Interface:
             else:
                 cursor.execute(query, values)
             connection.commit()
+            connection.close()
             return True
         except Exception as e:
             print('Caught an exception while executing query ...', str(e))
@@ -81,4 +82,28 @@ class SQL_Interface:
         )
 
         self.insert_query(query=query)
+    
+    def get_coldtime(self):
+        connection = mysql.connect(
+                host=self.host,
+                user=self.user,
+                passwd=self.password,
+                database=self.database
+        )
+        try:
+            cursor = connection.cursor()
+
+            query = "SELECT numb_minutes FROM coldtimes WHERE final_result=True ORDER BY time_stamp DESC LIMIT 1 "
+            
+            cursor.execute(query)
+            connection.commit()
+
+            data = cursor.fetchone()
+            data = data * 60 # return as seconds
+            connection.close()
+            return data
+        except Exception as e:
+            print('Caught an exception in get_coldtime ...', str(e))
+            return -1
+
 

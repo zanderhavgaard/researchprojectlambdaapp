@@ -142,7 +142,7 @@ class Benchmarker:
         barrier = mp.Barrier(num_threads)
         # list of processes to run
         processes = []
-        # pipes tp recieve return data from
+        # pipes to recieve return data from
         recieve_pipes = []
 
         # add processes to execute the methods
