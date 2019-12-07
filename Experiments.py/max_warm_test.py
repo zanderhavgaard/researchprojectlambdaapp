@@ -159,7 +159,7 @@ class max_warm_test:
                 minus_risk = False
 
             
-            print('Run: '+'latency: '+str(t) +' minutes from warm to cold: '+ str(m) + ' ofsset used: '+ str(o) +' within upper bound: '+ str(t < cold_plus_risk) +' within lower bound '+ str(t > cold_minus_risk))
+            print('Run: ' + 'latency: '+ str(t) +' minutes from warm to cold: '+ str(m) + ' ofsset used: '+ str(o) +' within upper bound: '+ str(t < cold_plus_risk) + ' within lower bound ' + str(t > cold_minus_risk))
            
 
         print()
@@ -188,6 +188,11 @@ class max_warm_test:
         response_dict = test_data.json_dict
         cold_time = response_dict['time'][response_dict['identifier']]['latency']
 
+        print('Starting experiemnt')
+        print()
+        print('UUID: ' + self.uuid)
+        print()
+
         print('Time for cold function - '+ self.lambda_function + ' - meassured time: ' + str(cold_time))
 
         avg_warm_time = self.compute_avg(self.avg_warm_time())
@@ -207,15 +212,17 @@ class max_warm_test:
             time.sleep(60*90)
             self.run()
         # First run of meassurements
+        print()
         print('interval ' + str(self.interval))
         first_run = self.get_warm_cutoff(cold_time,avg_warm_time * (1 + self.accuracy),self.interval,self.interval,self.offset)
 
         print()
         print('first run')
+        print()
 
         (latency,minutes,offset,b) = self.output_reults(first_run,cold_plus_risk,cold_minus_risk)
         self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,minutes,latency,offset,b,False)
-        print('latency: ' + str(latency) + ' minutes to cold: ' + str(minutes) + ' offset used: ' + str(offset) + ' within expected bounds: ' + str(b),'bounds ' + str(latency* (1 + self.accuracy)) + ' ' + str(latency * self.accuracy))
+        print('latency: ' + str(latency) + ' minutes to cold: ' + str(minutes) + ' offset used: ' + str(offset) + ' within expected bounds: ' + str(b) + ' bounds ' + str(latency* (1 + self.accuracy)) + ' ' + str(latency * self.accuracy))
 
         # Run again with inputs from first run and reduced interval and offset for greater accuracy 
         print()
@@ -229,7 +236,8 @@ class max_warm_test:
         print()
         print('final result')
         print('latency: ' + str(l) + ' minutes to cold: ' + str(m) + ' offset used: ' + str(o) + ' within expected bounds: ' + str(b2) + ' bounds ' + str(latency* (1 + self.accuracy)) +' ' + str(latency * self.accuracy))
-
+        print()
+        print()
 
 
 # could make switch that returns method and arguments to make experiemnt flexible and generic for all lambdas
