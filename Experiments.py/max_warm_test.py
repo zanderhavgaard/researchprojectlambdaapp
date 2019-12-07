@@ -215,7 +215,7 @@ class max_warm_test:
 
         (latency,minutes,offset,b) = self.output_reults(first_run,cold_plus_risk,cold_minus_risk)
         self.SQL.insert_coldtimes_finalrun(self.fux_id,self.uuid,minutes,latency,offset,b,False)
-        print('latency: ' + str(latency) + ' minutes to cold: ' + str(minutes) + ' offset used: ' + str(offset) + ' within expected bounds: ' + str(b),'bounds ' + str(latency* (1 + self.accuracy)) + ' ' +str(latency * self.accuracy))
+        print('latency: ' + str(latency) + ' minutes to cold: ' + str(minutes) + ' offset used: ' + str(offset) + ' within expected bounds: ' + str(b),'bounds ' + str(latency* (1 + self.accuracy)) + ' ' + str(latency * self.accuracy))
 
         # Run again with inputs from first run and reduced interval and offset for greater accuracy 
         print()
