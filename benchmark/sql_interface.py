@@ -49,7 +49,7 @@ class SQL_Interface:
         self.insert_query(query=query)
 
     def insert_coldtimes_finalrun(self,fx_id,uuid,minutes,latency,offset,in_bound,final):
-        query = "INSERT INTO coldtimes (fx_id, uuid, numb_minutes, latency, offset, final_result) VALUES ({},'{}',{},{},{},{},{})".format(
+        query = "INSERT INTO coldtimes (fx_id, uuid, numb_minutes, latency, offset, within_bounds, final_result) VALUES ({},'{}',{},{},{},{},{})".format(
             fx_id,
             uuid,
             minutes,
@@ -61,9 +61,9 @@ class SQL_Interface:
 
         self.insert_query(query=query)
     
-    def insert_coldtimes_run_avg(self,fx_id,uuid,minutes,latency,offset,in_bound,low_b,up_b,min_la,max_la,min_minu,max_minu,min_off,max_off):
-        query = "INSERT INTO coldtimes (fx_id,uuid,numb_minutes,layency,offset,within_bounds,lower_bound,upper_bound,min_latency,max_latency,"\
-        "min_minutes,max_minutes,min_offset,max_offset) VALUES ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{})".format(
+    def insert_coldtimes_run_avg(self,fx_id,uuid,minutes,latency,offset,in_bound,low_b,up_b,min_la,max_la,min_minu,min_off,max_off):
+        query = "INSERT INTO coldtimes (fx_id,uuid,numb_minutes,latency,offset,within_bounds,final_result, lower_bound,upper_bound,min_latency,max_latency,"\
+        "min_minutes,min_offset,max_offset) VALUES ({},{},{},{},{},{},{},{},{},{},{},{},{},{})".format(
             fx_id,
             uuid,
             minutes,
@@ -76,7 +76,6 @@ class SQL_Interface:
             min_la,
             max_la,
             min_minu,
-            max_minu,
             min_off,
             max_off
         )

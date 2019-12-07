@@ -10,7 +10,7 @@ from sql_interface import SQL_Interface
 from test_data import TestData
 
 def print(string:str='\n'):
-    with open("coldstartlog.txt", "a") as logfile:
+    with open("coldstartlog2.txt", "a") as logfile:
         logfile.write(string + '\n')
 
 
@@ -105,7 +105,7 @@ class max_warm_test:
                 
                 minutes = minutes + increment
             
-            vals.append( (longest_meassured, increment, local_offset) )
+            vals.append( (longest_meassured, minutes, local_offset) )
             longest_meassured = avg_warm_time
             minutes = int(minutes / 2)
         
@@ -138,7 +138,7 @@ class max_warm_test:
             (t,m,o) = list1[i]
             avg_time += t
             avg_min += m
-            avg_offset = o
+            avg_offset += o
 
             if t < min_time:
                 min_time = t
@@ -159,7 +159,7 @@ class max_warm_test:
                 minus_risk = False
 
             
-            print('Run: '+'latency: '+str(t) +' minutes from warm to cold: '+ str(m) + ' ofsset used: '+ str(o) +' within upper bound: '+ str(t > cold_plus_risk) +' within lower bound '+ str(t < cold_minus_risk))
+            print('Run: '+'latency: '+str(t) +' minutes from warm to cold: '+ str(m) + ' ofsset used: '+ str(o) +' within upper bound: '+ str(t < cold_plus_risk) +' within lower bound '+ str(t > cold_minus_risk))
            
 
         print()
@@ -173,7 +173,7 @@ class max_warm_test:
         print('All rund within lower bound: '+ str(minus_risk))
 
         self.SQL.insert_coldtimes_run_avg(self.fux_id,self.uuid,max_time,avg_time,avg_offset,(plus_risk and minus_risk),cold_minus_risk,
-        cold_plus_risk,min_time,max_time,min_min,max_min,min_offset,max_offset)
+        cold_plus_risk,min_time,max_time,min_min,min_offset,max_offset)
 
         return (avg_time,max_min,avg_offset,plus_risk and minus_risk) # maybe return avg minutes too
 
