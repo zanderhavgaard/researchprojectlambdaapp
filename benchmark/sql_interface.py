@@ -41,8 +41,8 @@ class SQL_Interface:
             self.insert_timing(timing)
 
     def insert_timing(self, t:Timing):
-        query = "INSERT INTO timings (test_uuid, fx_id, total_time, exe_time, latency, memory_limit, log_stream_name) VALUES ('{}', {}, {}, {}, {}, {}, '{}')".format(
-            t.test_uuid, t.function_id, t.total_time, t.exe_time, t.latency, t.memory_limit, t.log_stream_name
+        query = "INSERT INTO timings (test_uuid, function_name, fx_id, total_time, exe_time, latency, memory_limit, log_stream_name) VALUES ('{}', '{}', {}, {}, {}, {}, {}, '{}')".format(
+            t.test_uuid, t.function_name, t.function_id, t.total_time, t.exe_time, t.latency, t.memory_limit, t.log_stream_name
         )
         # print(query)
 

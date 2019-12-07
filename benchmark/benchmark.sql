@@ -29,6 +29,7 @@ CREATE TABLE tests (
 CREATE TABLE timings (
        id INT AUTO_INCREMENT PRIMARY KEY,
        test_uuid VARCHAR(128),
+       function_name VARCHAR(100),
        fx_id INT,
        total_time DOUBLE,
        exe_time DOUBLE,
