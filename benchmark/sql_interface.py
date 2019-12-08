@@ -24,6 +24,7 @@ class SQL_Interface:
             else:
                 cursor.execute(query, values)
             connection.commit()
+            connection.close()
             return True
         except Exception as e:
             print('Caught an exception while executing query ...', str(e))
@@ -41,8 +42,8 @@ class SQL_Interface:
             self.insert_timing(timing)
 
     def insert_timing(self, t:Timing):
-        query = "INSERT INTO timings (test_uuid, fx_id, total_time, exe_time, latency, memory_limit) VALUES ('{}', {}, {}, {}, {}, {})".format(
-            t.test_uuid, t.function_id, t.total_time, t.exe_time, t.latency, t.memory_limit
+        query = "INSERT INTO timings (test_uuid, function_name, fx_id, total_time, exe_time, latency, memory_limit, log_stream_name) VALUES ('{}', '{}', {}, {}, {}, {}, {}, '{}')".format(
+            t.test_uuid, t.function_name, t.function_id, t.total_time, t.exe_time, t.latency, t.memory_limit, t.log_stream_name
         )
         # print(query)
 
@@ -63,7 +64,7 @@ class SQL_Interface:
     
     def insert_coldtimes_run_avg(self,fx_id,uuid,minutes,latency,offset,in_bound,low_b,up_b,min_la,max_la,min_minu,min_off,max_off):
         query = "INSERT INTO coldtimes (fx_id,uuid,numb_minutes,latency,offset,within_bounds,final_result, lower_bound,upper_bound,min_latency,max_latency,"\
-        "min_minutes,min_offset,max_offset) VALUES ({},{},{},{},{},{},{},{},{},{},{},{},{},{})".format(
+        "min_minutes,min_offset,max_offset) VALUES ({},'{}',{},{},{},{},{},{},{},{},{},{},{},{})".format(
             fx_id,
             uuid,
             minutes,
@@ -81,4 +82,28 @@ class SQL_Interface:
         )
 
         self.insert_query(query=query)
+    
+    def get_coldtime(self):
+        connection = mysql.connect(
+                host=self.host,
+                user=self.user,
+                passwd=self.password,
+                database=self.database
+        )
+        try:
+            cursor = connection.cursor()
+
+            query = "SELECT numb_minutes FROM coldtimes WHERE final_result=True ORDER BY time_stamp DESC LIMIT 1 "
+            
+            cursor.execute(query)
+            connection.commit()
+
+            data = cursor.fetchone()
+            data = data * 60 # return as seconds
+            connection.close()
+            return data
+        except Exception as e:
+            print('Caught an exception in get_coldtime ...', str(e))
+            return -1
+
 
