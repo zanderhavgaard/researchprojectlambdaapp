@@ -190,7 +190,7 @@ class max_warm_test:
 
         print('Starting experiemnt')
         print()
-        print('UUID: ' + self.uuid)
+        print('UUID: ' + str(self.uuid))
         print()
 
         print('Time for cold function - '+ self.lambda_function + ' - meassured time: ' + str(cold_time))
