@@ -9,7 +9,7 @@ from sql_interface import SQL_Interface
 class WeakestLinkExperiment:
 
   def __init__(self):
-    self.bench = Benckmarker()
+    self.bench = Benchmarker()
     self.sql_interface = SQL_Interface()
     self.exp_iterations = 5
     self.num_items_to_get = 1
@@ -26,15 +26,15 @@ class WeakestLinkExperiment:
     for i in range(self.exp_iterations):
 
       # initial invoke
-      self.test_datas.append(benchmarker.request_feed_generator(num_items=self.num_items_to_get))
+      self.test_datas.append(self.bench.request_feed_generator(num_items=self.num_items_to_get))
       
       # wait for lambda to be cold
       time.sleep(self.cold_time_secs)
 
       # make generator + getter hot
-      self.test_datas.append(benchmarker.request_feed_generator(num_items=self.num_items_to_get))
+      self.test_datas.append(self.bench.request_feed_generator(num_items=self.num_items_to_get))
       # webview lambda will be cold
-      self.test_datas.append(benchmarker.request_feed_webview(num_items=self.num_items_to_get))
+      self.test_datas.append(self.bench.request_feed_webview(num_items=self.num_items_to_get))
       
       # wait for lambda to be cold
       time.sleep(self.cold_time_secs)
