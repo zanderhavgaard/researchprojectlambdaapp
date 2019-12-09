@@ -13,14 +13,10 @@ class ConcurrentExperiment:
         self.exp_iterations = 5
         self.SQL = SQL_interface()
         self.bench = Benchmarker()
-        self.uuid = uuid.uuid1() 
-        self.cold_time_secs = self.get_cold_time()
+        self.uuid = uuid.uuid1()
+        self.cold_time_secs = self.sql_interface.get_coldtime()
         self.test_data_lists = []
 
-    # returns cold time from db in seconds
-    def get_cold_time(self):
-        return self.sql_interface.get_coldtime() 
-    
     def run_experiment(self):
 
         for i in range(self.exp_iterations):
@@ -30,21 +26,14 @@ class ConcurrentExperiment:
             time.sleep(self.cold_time_secs)
 
         # add data to db
-        for td_list in test_data_lists:   
+        for td_list in test_data_lists:
           for td in td_list:
-            td.description = self.uuid + "|{}_concurrent_experiment".format(str(i))
+            td.description = str(self.uuid) + "|concurrent_experiment"
             self.SQL.inser_data(td)
-          
+
 
 # run class as self contained program
-self_contained_test = bool(sys.argv[1]) if len(sys.argv) > 1 else False 
+self_contained_test = bool(sys.argv[1]) if len(sys.argv) > 1 else False
 if self_contained_test:
   ce = ConcurrentExperiment()
   ce.run_experiment()
-
-
-
-
-
-    
-     
