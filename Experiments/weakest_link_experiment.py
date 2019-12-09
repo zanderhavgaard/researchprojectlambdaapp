@@ -36,6 +36,12 @@ class WeakestLinkExperiment:
       # webview lambda will be cold
       self.test_datas.append(benchmarker.request_feed_webview(num_items=self.num_items_to_get))
       
+      # wait for lambda to be cold
+      time.sleep(self.cold_time_secs)
+
+
+
+      
     # save test data in db
     for td in self.test_datas:
       td.description = self.uuid + "|{}_weakest_link_experiment".format(i)
