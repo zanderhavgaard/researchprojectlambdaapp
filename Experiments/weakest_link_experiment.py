@@ -44,7 +44,7 @@ class WeakestLinkExperiment:
       
     # save test data in db
     for td in self.test_datas:
-      td.description = self.uuid + "|{}_weakest_link_experiment".format(i)
+      td.description = self.uuid + "|{}_weakest_link_experiment".format(str(i))
       self.sql_interface.insert_test(td)
 
 # run class as self contained program

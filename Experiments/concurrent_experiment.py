@@ -32,7 +32,7 @@ class ConcurrentExperiment:
         # add data to db
         for td_list in test_data_lists:   
           for td in td_list:
-            td.description = self.uuid + "|{}_concurrent_experiment".format(i)
+            td.description = self.uuid + "|{}_concurrent_experiment".format(str(i))
             self.SQL.inser_data(td)
           
 
