@@ -1,7 +1,7 @@
 import sys
 import uuid
 import time
-from benchmarker import benchmarker
+from benchmarker import Benchmarker
 from sql_interface import SQL_Interface
 
 # Weakest Link Experiment
