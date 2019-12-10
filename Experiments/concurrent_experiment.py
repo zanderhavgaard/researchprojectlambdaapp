@@ -1,5 +1,5 @@
 from benchmarker import Benchmarker
-from sql_interface import SQL_interface
+from sql_interface import SQL_Interface
 from datetime import datetime
 import uuid
 import sys
