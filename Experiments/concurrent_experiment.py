@@ -14,7 +14,7 @@ class ConcurrentExperiment:
         self.SQL = SQL_Interface()
         self.bench = Benchmarker()
         self.uuid = uuid.uuid1()
-        self.cold_time_secs = self.sql_interface.get_coldtime()
+        self.cold_time_secs = self.SQL.get_coldtime()
         self.test_data_lists = []
 
     def run_experiment(self):
