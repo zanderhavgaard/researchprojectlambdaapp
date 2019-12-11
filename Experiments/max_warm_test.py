@@ -103,7 +103,7 @@ class max_warm_test:
                 if minutes > 90:
                     local_offset += offs
                 
-                minutes = minutes + increment
+                minutes = minutes + interval
             
             vals.append( (longest_meassured, minutes, local_offset) )
             longest_meassured = avg_warm_time
@@ -175,7 +175,7 @@ class max_warm_test:
         self.SQL.insert_coldtimes_run_avg(self.fux_id,self.uuid,max_time,avg_time,avg_offset,(plus_risk and minus_risk),cold_minus_risk,
         cold_plus_risk,min_time,max_time,min_min,min_offset,max_offset)
 
-        return (avg_time,max_min,avg_offset,plus_risk and minus_risk) # maybe return avg minutes too
+        return (avg_time/len(list1),max_min,avg_offset/len(list1),plus_risk and minus_risk) # maybe return avg minutes too
 
 
 
@@ -235,7 +235,7 @@ class max_warm_test:
 
         print()
         print('final result')
-        print('latency: ' + str(l) + ' minutes to cold: ' + str(m) + ' offset used: ' + str(o) + ' within expected bounds: ' + str(b2) + ' bounds ' + str(latency* (1 + self.accuracy)) +' ' + str(latency * self.accuracy))
+        print('latency: ' + str(l) + ' minutes to cold: ' + str(m) + ' offset used: ' + str(o) + ' within expected bounds: ' + str(b2) + ' bounds ' + str(latency * (1 + self.accuracy)) +' ' + str(latency * self.accuracy))
         print()
         print()
 
