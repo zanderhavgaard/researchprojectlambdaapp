@@ -11,7 +11,7 @@ class ConcurrentExperiment:
     def __init__(self,numb_threads):
         self.threads = numb_threads
         self.exp_iterations = 5
-        self.SQL = SQL_interface()
+        self.SQL = SQL_Interface()
         self.bench = Benchmarker()
         self.uuid = uuid.uuid1()
         self.cold_time_secs = self.sql_interface.get_coldtime()
@@ -26,7 +26,7 @@ class ConcurrentExperiment:
             time.sleep(self.cold_time_secs)
 
         # add data to db
-        for td_list in test_data_lists:
+        for td_list in self.test_data_lists:
           for td in td_list:
             td.description = str(self.uuid) + "|concurrent_experiment"
             self.SQL.inser_data(td)
