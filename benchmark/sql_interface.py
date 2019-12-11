@@ -92,13 +92,9 @@ class SQL_Interface:
         )
         try:
             cursor = connection.cursor()
-
             query = "SELECT numb_minutes FROM coldtimes WHERE final_result=True ORDER BY time_stamp DESC LIMIT 1 "
-            
             cursor.execute(query)
-            connection.commit()
-
-            data = cursor.fetchone()
+            data = cursor.fetchone()[0]
             data = data * 60 # return as seconds
             connection.close()
             return data
