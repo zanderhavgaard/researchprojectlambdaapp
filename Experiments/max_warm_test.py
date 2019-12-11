@@ -235,7 +235,7 @@ class max_warm_test:
 
         print()
         print('final result')
-        print('latency: ' + str(l) + ' minutes to cold: ' + str(m) + ' offset used: ' + str(o) + ' within expected bounds: ' + str(b2) + ' bounds ' + str(latency* (1 + self.accuracy)) +' ' + str(latency * self.accuracy))
+        print('latency: ' + str(l) + ' minutes to cold: ' + str(m) + ' offset used: ' + str(o) + ' within expected bounds: ' + str(b2) + ' bounds ' + str(latency * (1 + self.accuracy)) +' ' + str(latency * self.accuracy))
         print()
         print()
 
