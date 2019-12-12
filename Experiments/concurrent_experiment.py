@@ -29,7 +29,7 @@ class ConcurrentExperiment:
         for td_list in self.test_data_lists:
           for td in td_list:
             td.description = str(self.uuid) + "|concurrent_experiment"
-            self.SQL.inser_data(td)
+            self.SQL.insert_test(td)
 
 
 # run class as self contained program
