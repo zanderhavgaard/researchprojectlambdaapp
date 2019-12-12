@@ -1,0 +1,200 @@
+Starting experiemnt
+
+
+UUID: 03d52f18-1ce1-11ea-9264-b827ebbb6c40
+
+
+Time for cold function - getter - meassured time: 0.7490477561950684
+Time for average warm function call: 0.1664044141769409
+warm function is 4.501369509336405 times faster
+
+
+
+
+interval 2
+
+
+Starting run 0 Minutes used = 2 offset used = 0.1
+
+
+longest: 0.29952794551849365 cold-offset: 0.6490477561950684
+sleeping for minutes 2
+sleeping for minutes 4
+sleeping for minutes 6
+sleeping for minutes 8
+sleeping for minutes 10
+sleeping for minutes 12
+
+
+Starting run 1 Minutes used = 7 offset used = 0.1
+
+
+longest: 0.29952794551849365 cold-offset: 0.6490477561950684
+sleeping for minutes 7
+sleeping for minutes 9
+sleeping for minutes 11
+
+
+Starting run 2 Minutes used = 6 offset used = 0.1
+
+
+longest: 0.29952794551849365 cold-offset: 0.6490477561950684
+sleeping for minutes 6
+sleeping for minutes 8
+sleeping for minutes 10
+sleeping for minutes 12
+
+
+Starting run 3 Minutes used = 7 offset used = 0.1
+
+
+longest: 0.29952794551849365 cold-offset: 0.6490477561950684
+sleeping for minutes 7
+sleeping for minutes 9
+sleeping for minutes 11
+
+
+Starting run 4 Minutes used = 6 offset used = 0.1
+
+
+longest: 0.29952794551849365 cold-offset: 0.6490477561950684
+sleeping for minutes 6
+sleeping for minutes 8
+sleeping for minutes 10
+sleeping for minutes 12
+
+
+first run
+
+
+Outputting results
+plus_risk 0.898857307434082
+minus_risk 0.5992382049560547
+values for each run
+Run: latency: 0.7279841899871826 minutes from warm to cold: 14 ofsset used: 0.1 within upper bound: True within lower bound True
+Run: latency: 0.7477374076843262 minutes from warm to cold: 13 ofsset used: 0.1 within upper bound: True within lower bound True
+Run: latency: 0.771108865737915 minutes from warm to cold: 14 ofsset used: 0.1 within upper bound: True within lower bound True
+Run: latency: 0.7727658748626709 minutes from warm to cold: 13 ofsset used: 0.1 within upper bound: True within lower bound True
+Run: latency: 0.711545467376709 minutes from warm to cold: 14 ofsset used: 0.1 within upper bound: True within lower bound True
+
+
+Averaged values for all runs
+latency: 0.7462283611297608 minutes: 13.6 offset: 0.1
+
+
+min time: 0.711545467376709 max time: 0.7727658748626709
+min minutes: 13 max minutes: 14
+min offset: 0.1 max offset 0.1
+All rund within upper bound: True
+All rund within lower bound: True
+latency: 0.7462283611297608 minutes to cold: 14 offset used: 0.1 within expected bounds: True bounds 1.3432110500335694 0.5969826889038087
+
+
+SECOND RUN
+
+
+
+
+Starting run 0 Minutes used = 12 offset used = 0.05
+
+
+longest: 0.1664044141769409 cold-offset: 0.6962283611297607
+sleeping for minutes 12
+
+
+Starting run 1 Minutes used = 6 offset used = 0.05
+
+
+longest: 0.1664044141769409 cold-offset: 0.6962283611297607
+sleeping for minutes 6
+sleeping for minutes 7.0
+sleeping for minutes 8.0
+sleeping for minutes 9.0
+sleeping for minutes 10.0
+sleeping for minutes 11.0
+
+
+Starting run 2 Minutes used = 6 offset used = 0.05
+
+
+longest: 0.1664044141769409 cold-offset: 0.6962283611297607
+sleeping for minutes 6
+sleeping for minutes 7.0
+sleeping for minutes 8.0
+sleeping for minutes 9.0
+sleeping for minutes 10.0
+sleeping for minutes 11.0
+
+
+Starting run 3 Minutes used = 6 offset used = 0.05
+
+
+longest: 0.1664044141769409 cold-offset: 0.6962283611297607
+sleeping for minutes 6
+sleeping for minutes 7.0
+sleeping for minutes 8.0
+sleeping for minutes 9.0
+sleeping for minutes 10.0
+sleeping for minutes 11.0
+
+
+Starting run 4 Minutes used = 6 offset used = 0.05
+
+
+longest: 0.1664044141769409 cold-offset: 0.6962283611297607
+sleeping for minutes 6
+sleeping for minutes 7.0
+sleeping for minutes 8.0
+sleeping for minutes 9.0
+sleeping for minutes 10.0
+sleeping for minutes 11.0
+Outputting results
+plus_risk 0.8954740333557129
+minus_risk 0.14924567222595211
+values for each run
+Run: latency: 0.7272567749023438 minutes from warm to cold: 13.0 ofsset used: 0.05 within upper bound: True within lower bound True
+Run: latency: 0.7642691135406494 minutes from warm to cold: 12.0 ofsset used: 0.05 within upper bound: True within lower bound True
+Run: latency: 0.7652733325958252 minutes from warm to cold: 12.0 ofsset used: 0.05 within upper bound: True within lower bound True
+Run: latency: 0.7201800346374512 minutes from warm to cold: 12.0 ofsset used: 0.05 within upper bound: True within lower bound True
+Run: latency: 0.7349367141723633 minutes from warm to cold: 12.0 ofsset used: 0.05 within upper bound: True within lower bound True
+
+
+Averaged values for all runs
+latency: 0.7423831939697265 minutes: 12.2 offset: 0.05
+
+
+min time: 0.7201800346374512 max time: 0.7652733325958252
+min minutes: 12.0 max minutes: 13.0
+min offset: 0.05 max offset 0.05
+All rund within upper bound: True
+All rund within lower bound: True
+
+
+final result
+latency: 0.7423831939697265 minutes to cold: 13.0 offset used: 0.05 within expected bounds: True bounds 1.3432110500335694 0.5969826889038087
+
+
+
+
+Starting experiemnt
+
+
+UUID: 7ef34810-1d1d-11ea-9ee2-b827ebbb6c40
+
+
+Time for cold function - getter - meassured time: 0.7172188758850098
+Time for average warm function call: 0.17207696437835693
+warm function is 4.168012136174215 times faster
+
+
+
+
+interval 2
+
+
+Starting run 0 Minutes used = 2 offset used = 0.1
+
+
+longest: 0.3097385358810425 cold-offset: 0.6172188758850098
+sleeping for minutes 2
+sleeping for minutes 4
