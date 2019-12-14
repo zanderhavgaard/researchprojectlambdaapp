@@ -172,8 +172,9 @@ class max_warm_test:
         print('All rund within upper bound: ' + str(plus_risk))
         print('All rund within lower bound: '+ str(minus_risk))
 
-        self.SQL.insert_coldtimes_run_avg(self.fux_id,self.uuid,max_time,avg_time,avg_offset,(plus_risk and minus_risk),cold_minus_risk,
+        self.SQL.insert_coldtimes_run_avg(self.fux_id,self.uuid,max_min,avg_time/len(list1),avg_offset/len(list1),(plus_risk and minus_risk),cold_minus_risk,
         cold_plus_risk,min_time,max_time,min_min,min_offset,max_offset)
+        
 
         return (avg_time/len(list1),max_min,avg_offset/len(list1),plus_risk and minus_risk) # maybe return avg minutes too
 
@@ -240,8 +241,7 @@ class max_warm_test:
         print()
 
 
-# could make switch that returns method and arguments to make experiemnt flexible and generic for all lambdas
-
+    # checkmark
 
 
 
